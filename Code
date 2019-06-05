@@ -1,0 +1,84 @@
+#include <bits/stdc++.h>
+using namespace std;
+bool isValid(vector<vector<int>> sudoku,int x,int y,int k)
+{
+    for(int i=0;i<9;i++)
+       if(sudoku[x][i]==k&&y!=i)
+          return false;
+    for(int i=0;i<9;i++)
+       if(sudoku[i][y]==k&&x!=i)
+          return false;
+    int l=x/3,m=y/3;      
+    for(int i=l*3;i<3*l+3;i++)
+      for(int j=m*3;j<m*3+3;j++)
+         if(sudoku[i][j]==k&&x!=i&&y!=j)
+            return false;
+    return true;      
+}
+bool solve(vector<vector<int>> &sudoku,int i,int j)
+{
+    if(i==9&&j==0)
+    {
+        //sudoku solved
+        return true;
+    }
+    if(sudoku[i][j]==0)
+     {
+        for(int k=1;k<=9;k++)
+        {
+            if(isValid(sudoku,i,j,k))
+            {
+            sudoku[i][j]=k;
+            int x=i,y=j+1;
+            if(y==9)
+               {y=0;x++;}
+            if(solve(sudoku,x,y))
+            {
+                return true;
+            }
+            sudoku[i][j]=0;
+            }
+         }
+         
+    }
+    else
+    {   
+        j++;
+        if(j==9)
+         {
+             i++;j=0;
+         }
+        if(solve(sudoku,i,j))
+           return true;
+    }
+    return false;
+}
+int main() {
+	//code
+	int t;
+	cin>>t;
+	while(t--)
+	{
+	    vector<vector<int>> sudoku(9,vector<int>(9));
+	    for(int i=0;i<9;i++)
+	      for(int j=0;j<9;j++)
+	         cin>>sudoku[i][j];
+	    solve(sudoku,0,0);
+        cout<<"\n Your Solution to the Sudoku\n-------------------\n";
+	    for(int i=0;i<9;i++)
+	      {
+	          for(int j=0;j<9;j++){
+	             cout<<sudoku[i][j]<<" ";
+                 if(j==2||j==5)
+                    cout<<"|";
+              }
+              cout<<endl;
+              if(i==2||i==5){
+                for(int j=0;j<19;j++)
+                    cout<<"-";
+              cout<<endl;    
+              }                    
+	      }
+	}
+	return 0;
+}
